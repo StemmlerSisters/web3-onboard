@@ -22,7 +22,7 @@
   import warningIcon from '../../icons/warning.js'
   import questionIcon from '../../icons/question.js'
   import shieldIcon from '../../icons/shield-icon.js'
-  import { poweredByBlocknative } from '../../icons/index.js'
+  import { poweredByThirdweb } from '../../icons/index.js'
   import DisconnectAllConfirm from './DisconnectAllConfirm.svelte'
   import EnableTransactionProtectionModal from './EnableTransactionProtectionModal.svelte'
   import { configuration } from '../../configuration.js'
@@ -72,11 +72,12 @@
   const { device } = configuration
 
   const enableProtectionRPC = async () => {
+    if (!validAppChain) return
     try {
       await updateChainRPC(
         primaryWallet.provider,
         validAppChain,
-        validAppChain?.protectedRpcUrl || BN_BOOST_RPC_URL
+        validAppChain.protectedRpcUrl || BN_BOOST_RPC_URL
       )
       enableTransactionProtection = false
     } catch (error) {
@@ -461,7 +462,7 @@
           </div>
         </div>
         <!-- Only display on Eth Mainnet if protectedRpcUrl is not set per chain -->
-        {#if !$accountCenter$.hideTransactionProtectionBtn && (primaryWalletOnMainnet || validAppChain?.protectedRpcUrl)}
+        {#if !$accountCenter$.hideTransactionProtectionBtn && (primaryWalletOnMainnet || (validAppChain && validAppChain.protectedRpcUrl))}
           <div
             on:click={() => (enableTransactionProtection = true)}
             class="protect action-container flex items-center pointer"
@@ -557,12 +558,12 @@
         {/if}
         <div class="w100">
           <a
-            href="https://blocknative.com"
+            href="https://thirdweb.com"
             target="_blank"
             rel="noopener noreferrer"
             class="flex justify-center items-center powered-by-container"
           >
-            {@html poweredByBlocknative}
+            {@html poweredByThirdweb}
           </a>
         </div>
       </div>

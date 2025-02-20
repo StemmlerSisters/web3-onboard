@@ -1,6 +1,6 @@
-// bn branding
-export { default as defaultBnIcon } from './blocknative-icon.js'
-export { default as poweredByBlocknative } from './poweredByBlocknative.js'
+// tw branding
+export { default as defaultBnIcon } from './thirdweb-icon.js'
+export { default as poweredByThirdweb } from './poweredByThirdweb.js'
 // chain icons
 export { default as ethereumIcon } from './ethereum.js'
 export { default as polygonIcon } from './polygon.js'
@@ -24,3 +24,4 @@ export { default as warningIcon } from './warning.js'
 export { default as successIcon } from './success.js'
 export { default as pendingIcon } from './pending.js'
 export { default as degenIcon } from './degen.js'
+export { default as snaxIcon } from './snax.js'

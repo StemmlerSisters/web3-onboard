@@ -1,64 +1,87 @@
 # @web3-onboard/capsule
 
-## Wallet module for connecting Capsule to web3-onboard
+## Wallet module for connecting Capsule Embedded Wallets to Web3-Onboard
 
-[Capsule](https://usecapsule.com/) is a signing solution that you can use to create secure embedded MPC wallets with just an email or social login that are recoverable, portable, and permissioned across different crypto applications, so your users don't need to create different signers or contract accounts for every app they use.
+[Capsule](https://usecapsule.com/) is a signing solution that enables you to create secure embedded MPC wallets, allowing users to onboard with just an email or social login. Capsule wallets are recoverable, portable, and permissioned across different crypto applications, eliminating the need for users to create separate signers or contract accounts for each app.
 
-Adding the Capsule Module to web3onboard gives your users the ability to log in with Capsule wallets created elsewhere. You can also [request a Capsule API Key](https://form.typeform.com/to/hLaJeYJW) to allow users to easily create embedded wallets within web3onboard without any extra integration steps.
+### Getting Started
 
-To learn more, check out the [Capsule Developer Docs](https://docs.usecapsule.com/)
+1. Visit the [Capsule Developer Portal](https://developer.usecapsule.com)
+2. Create a new project
+3. Generate an API key for your project
+4. Configure your project settings and environments
 
-### Install
+### Installation
 
-`yarn add @web3-onboard/capsule`
+```bash
+# Using npm
+npm install @web3-onboard/capsule
 
-## Options
+# Using yarn
+yarn add @web3-onboard/capsule
+
+# Using pnpm
+pnpm install @web3-onboard/capsule
+
+# Using bun
+bun add @web3-onboard/capsule
+```
+
+## Configuration Options
 
 ```typescript
-type CapsuleInitOptions = {
+export type CapsuleInitOptions = {
+  // The environment to connect to (PROD or BETA)
   environment: Environment
-  appName: string
-  apiKey?: string
+
+  // Your Capsule API key from the developer portal
+  apiKey: string
+
+  // Optional: Additional constructor options for the Capsule client
+  constructorOpts?: Partial<ConstructorOpts>
+
+  // Optional: Customization props for the Capsule modal
+  modalProps?: Partial<CapsuleModalProps>
+
+  // Optional: Custom function to load wallet icon
+  walletIcon?: () => Promise<string>
+
+  // Optional: Custom label for the wallet
+  walletLabel?: string
 }
 ```
 
-`environment` - The environment to which you want to connect, either `Environment.DEVELOPMENT` for testnets and development only or `Environment.PRODUCTION` for production use.
-`appName` - Your Application's name - displayed in the modal when your users are prompted to log in.
-`apiKey` - Your Capsule API Key. Required for new user creation, but not required if you are only allowing users to log in. To get an API key, fill out [this form](https://form.typeform.com/to/hLaJeYJW).
-
-## Usage
+## Implementation
 
 ```typescript
 import Onboard from '@web3-onboard/core'
+import Capsule, { Environment } from '@usecapsule/react-sdk'
 import capsuleModule from '@web3-onboard/capsule'
 
-// initialize the module with options
-const capsule = capsuleModule()
+// Initialize Capsule client
+const capsule = new Capsule(
+  Environment.BETA, // Use Environment.PROD for production
+  'YOUR_API_KEY' // Your API key from developer.usecapsule.com
+)
 
+// Initialize the Capsule module
+const capsuleWallet = capsuleModule(capsule)
+
+// Initialize web3-onboard
 const onboard = Onboard({
   // ... other Onboard options
   wallets: [
-    capsule
+    capsuleWallet
     //... other wallets
   ]
 })
 
+// Connect wallet
 const connectedWallets = await onboard.connectWallet()
 console.log(connectedWallets)
 ```
 
-## Build env settings (webpack config)
+## Additional Resources
 
-You may need to add the following rule to your webpack config module
-in order to handle certain styling files (See the config for the
-Blocknative demo app):
-
-```typescript
-{
-  test: /\.(woff(2)?|eot|ttf|otf|svg)$/,
-  type: 'asset/resource',
-  generator: {
-    filename: 'fonts/[name][ext][query]'
-  }
-}
-```
+- [Capsule Documentation](https://docs.usecapsule.com/)
+- [Developer Portal](https://developer.usecapsule.com)

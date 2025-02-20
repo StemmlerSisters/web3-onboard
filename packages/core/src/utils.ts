@@ -9,7 +9,8 @@ import type {
   Chain,
   WalletInit,
   WalletModule,
-  ChainWithDecimalId
+  ChainWithDecimalId,
+  DeviceNotBrowser
 } from '@web3-onboard/common'
 
 import {
@@ -29,15 +30,12 @@ import {
   harmonyOneIcon,
   arbitrumIcon,
   baseIcon,
-  degenIcon
+  degenIcon,
+  snaxIcon
 } from './icons/index.js'
 
-import type {
-  ChainStyle,
-  ConnectedChain,
-  DeviceNotBrowser,
-  NotifyEventStyles
-} from './types.js'
+import type { ChainStyle, ConnectedChain, NotifyEventStyles } from './types.js'
+import type { Chain as ViemChain } from 'viem'
 
 export function getDevice(): Device | DeviceNotBrowser {
   if (typeof window !== 'undefined') {
@@ -62,23 +60,6 @@ export function getDevice(): Device | DeviceNotBrowser {
 
 export const notNullish = <T>(value: T | null | undefined): value is T =>
   value != null
-
-export function validEnsChain(chainId: ChainId): ChainId | null {
-  // return L2s as Eth for ens resolution
-  switch (chainId) {
-    case '0x1':
-    case '0x89': // Polygon
-    case '0xa': //Optimism
-    case '0xa4b1': // Arb One
-    case '0xa4ba': // Arb Nova
-    case '0x144': // zksync
-      return '0x1'
-    case '0xaa36a7': // Sepolia
-      return chainId
-    default:
-      return null
-  }
-}
 
 export function isSVG(str: string): boolean {
   return str.includes('<svg')
@@ -133,7 +114,47 @@ export const chainIdToLabel: Record<string, string> = {
   '0x63564C40': 'Harmony One',
   '0xa4b1': 'Arbitrum One',
   '0xa4ba': 'Arbitrum Nova',
-  '0x27bc86aa': 'Degen'
+  '0x27bc86aa': 'Degen',
+  '0x890': 'SNAX'
+}
+
+export function validEnsChain(chainId: ChainId): string | null {
+  // return L2s as Eth for ens resolution
+  switch (chainId) {
+    case '0x1':
+    case '0x89': // Polygon
+    case '0xa': //Optimism
+    case '0xa4b1': // Arb
+    case '0x144': // zksync
+      return '0x1'
+    case '0x5': // Goerli
+      return chainId
+    case '0xaa36a7': // Sepolia
+      return chainId
+    default:
+      return null
+  }
+}
+
+export const chainIdToViemENSImport = async (
+  chainId: string
+): Promise<ViemChain | null> => {
+  switch (chainId) {
+    case '0x89':
+    case '0xa':
+    case '0xa4b1':
+    case '0x144':
+    case '0x1': {
+      const { mainnet } = await import('viem/chains')
+      return mainnet
+    }
+    case '0xaa36a7': {
+      const { sepolia } = await import('viem/chains')
+      return sepolia
+    }
+    default:
+      return null
+  }
 }
 
 export const networkToChainId: Record<string, ChainId> = {
@@ -144,7 +165,8 @@ export const networkToChainId: Record<string, ChainId> = {
   'matic-main': '0x89',
   'fantom-main': '0xfa',
   'matic-mumbai': '0x80001',
-  degen: '0x27bc86aa'
+  degen: '0x27bc86aa',
+  SNAX: '0x890'
 }
 
 export const chainStyles: Record<string, ChainStyle> = {
@@ -215,6 +237,10 @@ export const chainStyles: Record<string, ChainStyle> = {
   '0x27bc86aa': {
     icon: degenIcon,
     color: '#a36dfe'
+  },
+  '0x890': {
+    icon: snaxIcon,
+    color: '#00D1FF'
   }
 }
 

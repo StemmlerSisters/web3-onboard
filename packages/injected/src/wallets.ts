@@ -581,7 +581,7 @@ const bitget: InjectedWalletModule = {
   label: ProviderLabel.Bitget,
   injectedNamespace: InjectedNameSpace.Bitget,
   checkProviderIdentity: ({ provider }) =>
-    !!provider && !!provider['ethereum'][ProviderIdentityFlag.Bitget],
+    !!provider && !!provider['ethereum'] && !!provider['ethereum'][ProviderIdentityFlag.Bitget],
   getIcon: async () => (await import('./icons/bitget.js')).default,
   getInterface: async () => ({
     provider: window.bitkeep && window.bitkeep.ethereum
@@ -909,6 +909,28 @@ const stablewallet: InjectedWalletModule = {
   platforms: ['mobile']
 }
 
+const echooo: InjectedWalletModule = {
+  label: ProviderLabel.Echooo,
+  injectedNamespace: InjectedNameSpace.Ethereum,
+  checkProviderIdentity: ({ provider }) =>
+    !!provider && !!provider[ProviderIdentityFlag.Echooo],
+  getIcon: async () => (await import('./icons/echooo.js')).default,
+  getInterface: getInjectedInterface(ProviderIdentityFlag.Echooo),
+  platforms: ['all'],
+  externalUrl: ProviderExternalUrl.Echooo
+}
+
+const keplr: InjectedWalletModule = {
+  label: ProviderLabel.Keplr,
+  injectedNamespace: InjectedNameSpace.Ethereum,
+  checkProviderIdentity: ({ provider }) =>
+    !!provider && !!provider[ProviderIdentityFlag.Keplr],
+  getIcon: async () => (await import('./icons/keplr.js')).default,
+  getInterface: getInjectedInterface(ProviderIdentityFlag.Keplr),
+  platforms: ['all'],
+  externalUrl: ProviderExternalUrl.Keplr
+}
+
 const wallets = [
   zeal,
   exodus,
@@ -966,7 +988,9 @@ const wallets = [
   foxwallet,
   Lif3Wallet,
   zodiacPilot,
-  stablewallet
+  stablewallet,
+  echooo,
+  keplr
 ]
 
 export default wallets
